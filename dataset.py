@@ -4,8 +4,8 @@ from tqdm import tqdm
 from scipy import signal
 import matplotlib.pyplot as plt
 import os 
-from pandas import DataFrame as df
-
+import csv
+from pathlib import Path
 
 class CFA_data:
   def __init__(self, N=1000, W=638, H=638):
@@ -34,19 +34,28 @@ class CFA_data:
     #print(img)
     return img
 
-  def make_fake_data(self):
+  def make_fake_data(self, path='./fake_dataset'):
     print('Create fake data ...')
-    for i in tqdm(range(self.N)):
-      self.label.append(np.random.randint(1,5))
-      self.data.append(self.create_fake_one(self.label[-1]))
-    #print(self.data)
-    #print(self.label)
+    folder = Path(path) 
+    print(folder)
+    if not folder.is_dir():
+      os.mkdir(path)
+    
+    my_file_path = os.path.join(path, 'file.csv')
+    my_file = Path(my_file_path)
+    if my_file.is_file():
+      os.remove(my_file_path)
+    else:
+      myfile.touch() 
+        
+    with open(my_file_path, 'w', newline='') as file:
+      writer = csv.writer(file)
+      for i in tqdm(range(self.N)):
+        cfa_pattern = np.random.randint(1,5)
+        data = self.create_fake_one(cfa_pattern)
+        data = self.bilinear_interpolate(data)
+        writer.writerow([i, data, cfa_pattern])
 
-  def apply_interpolate(self, func):
-    if func==1:
-      for i in range(self.N):
-        self.data[i] = self.bilinear_interpolate(self.data[i])
-  
   def bilinear_interpolate(self, im):
     bilinear_conv = np.array([[1,2,1],
                    [2,4,2],
@@ -54,23 +63,9 @@ class CFA_data:
     bilinear_conv = bilinear_conv * 1/4
     return(signal.convolve2d(im, bilinear_conv, 'same'))
   
-  def save(self, path='fake_dataset'):
-    #if os.path.isfile(path)==True:
-    #    os.mkdir('fake_dataset')
-    data = df({'data': self.data, 'lablel': self.label})
-    print(data.head())
-    data.to_csv(os.path.join(path, 'file.csv'))
-        
+       
 
 
 if  __name__=='__main__':
-  data = CFA_data(N=10000, W=538, H=538);
+  data = CFA_data(N=int(10e6), W=538, H=538);
   data.make_fake_data()
-  #fig = plt.figure()
-  #ax1 = fig.add_subplot(1,2,1)
-  #ax1.imshow(data.data[1].astype(np.uint8), cmap='Reds')
-  data.apply_interpolate(1)
-  data.save()
-  #ax2 = fig.add_subplot(1,2,2)
-  #ax2.imshow(data.data[1].astype(np.uint8), cmap='Reds')
-  #plt.show()
