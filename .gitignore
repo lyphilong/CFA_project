@@ -1,4 +1,2 @@
-./fake_dataset/*
-
-
+fake_dataset/
 *.swp
