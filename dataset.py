@@ -46,7 +46,7 @@ class CFA_data:
     if my_file.is_file():
       os.remove(my_file_path)
     else:
-      myfile.touch() 
+      my_file.touch() 
         
     with open(my_file_path, 'w', newline='') as file:
       writer = csv.writer(file)
