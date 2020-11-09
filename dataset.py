@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import os 
 import csv
 from pathlib import Path
+from PIL import Image
 
 class CFA_data:
   def __init__(self, N=1000, W=638, H=638):
@@ -54,7 +55,10 @@ class CFA_data:
         cfa_pattern = np.random.randint(1,5)
         data = self.create_fake_one(cfa_pattern)
         data = self.bilinear_interpolate(data)
-        writer.writerow([i, data, cfa_pattern])
+        data = (255.0 / data.max() * (data - data.min())).astype(np.uint8)
+        im = Image.fromarray(data)
+        im.save('{}/{}.png'.format(path,i))
+        writer.writerow([i, cfa_pattern])
 
   def bilinear_interpolate(self, im):
     bilinear_conv = np.array([[1,2,1],
@@ -67,5 +71,5 @@ class CFA_data:
 
 
 if  __name__=='__main__':
-  data = CFA_data(N=int(10e6), W=538, H=538);
+  data = CFA_data(N=int(10e2), W=538, H=538);
   data.make_fake_data()
