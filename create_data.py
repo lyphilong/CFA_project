@@ -38,8 +38,12 @@ class CFA_data:
 
   def make_fake_data(self, path='./fake_dataset'):
     print('Delete old data')
-    shutil.rmtree(path)
+    #shutil.rmtree(path)
     print('Create fake data ...')
+    try:
+      os.mkdir('./fake_dataset')
+    except:
+      pass
     folder = Path(path) 
     print(folder)
     if not folder.is_dir():
@@ -75,5 +79,10 @@ class CFA_data:
 
 
 if  __name__=='__main__':
-  data = CFA_data(N=int(10), W=538, H=538);
-  data.make_fake_data()
+  Num_point = 100
+
+  data_train = CFA_data(N=int(Num_point), W=538, H=538)
+  data_train.make_fake_data(path='./fake_dataset/train')
+
+  data_test = CFA_data(N=int(Num_point*0.25), W=538, H=538)
+  data_test.make_fake_data(path = './fake_dataset/test')
