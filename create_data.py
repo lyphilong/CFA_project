@@ -7,6 +7,7 @@ import os
 import csv
 from pathlib import Path
 from PIL import Image
+import shutil
 
 class CFA_data:
   def __init__(self, N=1000, W=638, H=638):
@@ -36,6 +37,8 @@ class CFA_data:
     return img
 
   def make_fake_data(self, path='./fake_dataset'):
+    print('Delete old data')
+    shutil.rmtree(path)
     print('Create fake data ...')
     folder = Path(path) 
     print(folder)
@@ -51,6 +54,7 @@ class CFA_data:
         
     with open(my_file_path, 'w', newline='') as file:
       writer = csv.writer(file)
+      writer.writerow('')
       for i in tqdm(range(self.N)):
         cfa_pattern = np.random.randint(1,5)
         data = self.create_fake_one(cfa_pattern)
@@ -71,5 +75,5 @@ class CFA_data:
 
 
 if  __name__=='__main__':
-  data = CFA_data(N=int(10e2), W=538, H=538);
+  data = CFA_data(N=int(10), W=538, H=538);
   data.make_fake_data()
