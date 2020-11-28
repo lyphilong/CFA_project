@@ -2,3 +2,4 @@ fake_dataset/
 *.swp
 __pycache__/
 ValueCounting/dataset/
+*.pth
