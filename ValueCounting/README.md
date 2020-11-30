@@ -7,10 +7,9 @@ Implement the paper **CFA Pattern Identification of Digital Cameras Using Interm
 * Get cfa information from image
 * Can count green pixel in image
 * Check the position of cfa
-
+* Found dataset of raw image: *http://loki.disi.unitn.it/RAISE/download.html*
 
 # TODO:
-* Need dataset from  *https://www.epfl.ch/labs/cvlab/data/data-pose-index-php/*
 * Adding parse for code
-
-
+* Need more speed to download file image 
+* Need to find more pattern of CFA in dataset

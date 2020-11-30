@@ -3,6 +3,8 @@ import numpy as np
 import cv2 
 import matplotlib.pyplot as plt
 import subprocess
+import glob
+
 
 def get_image_cfa_patter(path):
   cmd = [ 'dcraw', '-i', '-v', path]
@@ -35,11 +37,17 @@ def count_green(img):
 
 
 if __name__=='__main__':
-  img = cv2.imread('./RAW_NIKON_D70S.tiff', 0)
-  #plt.imshow(img)
-  #plt.show()
-  print(img)
-  print(get_image_cfa_patter('./RAW_NIKON_D70S.NEF'))
-  print(count_green(img))
+  list_name_img = [img for img in glob.glob('./dataset/*.NEF')]
+  print(list_name_img)
+  for img in list_name_img:
+    cmd = ['dcraw', '-T', '-q', '0~3', img]
+    subprocess.run(cmd)
+
+
+  list_img = [cv2.imread(img) for img in glob.glob('./dataset/*.tiff')]
+  for idx in range(len(list_img)):
+    img = list_img[idx]
+    print(get_image_cfa_patter(list_name_img[idx]))
+    print(count_green(img[0]))
 
 
