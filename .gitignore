@@ -3,3 +3,4 @@ fake_dataset/
 __pycache__/
 ValueCounting/dataset/
 *.pth
+Shin/dataset/

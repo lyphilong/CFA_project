@@ -9,6 +9,28 @@ from tqdm import trange
 import random
 from math import floor 
 
+
+
+
+#Read list of images
+#param: path include filetype
+#output: np.ndarray (N,W,H,3)
+def read_images(PATH):
+  list_img = [img for img in glob.glob(PATH)]
+  images = []
+  for idx in range(len(list_img)):
+    img_name = list_img[idx]
+    img = cv.imread(img_name)
+    img = img[np.newaxis, :, :, :]
+    #trash
+    if img.shape[1]!=3280:
+      img = np.moveaxis(img, 1, 2)
+    images.append(img)
+    print(img.shape)
+  images = np.concatenate(images, axis=0)
+  print(images.shape)
+  return images
+
 #Split image to array of 4 images
 #Input: (2W,2H,3)
 #Output: (W/2, H/2, 12)
@@ -84,14 +106,8 @@ def train_net(images, net, lr=1e-3, n_epochs_auxiliary=1000, n_epochs_blockwise=
 
 if __name__=='__main__':
   PATCH_NUM = 4
-  list_img = [img for img in glob.glob('./dataset/*.tiff')]
-  images = []
-  for idx in range(len(list_img)):
-    img_name = list_img[idx]
-    img = cv.imread(img_name)
-    img = img[np.newaxis, :, :, :]
-    images.append(img)
-  images = np.concatenate(images, axis=0)
+  PATH = './dataset/*.tiff'
+  images = read_images(PATH)
   images = image_to_block(images)
   images = image_to_patch(images, PATCH_NUM)
   net = Net()

@@ -4,9 +4,10 @@ import cv2
 import matplotlib.pyplot as plt
 import subprocess
 import glob
+import pickle
 
 
-def get_image_cfa_patter(path):
+def get_image_cfa_pattern(path):
   cmd = [ 'dcraw', '-i', '-v', path]
   output = subprocess.Popen( cmd, stdout=subprocess.PIPE ).communicate()[0]
   img_info = output.decode('utf-8')
@@ -80,9 +81,15 @@ if __name__=='__main__':
 
 
   list_img = [cv2.imread(img) for img in glob.glob('./dataset/*.tiff')]
-  for idx in range(len(list_img)):
+  info = []
+  for idx in range(len(list_img)-2):
+    print(idx)
     img = list_img[idx]
-    print(get_image_cfa_patter(list_name_img[idx]))
-    print(pattern_decision(img))
+    info.append([list_name_img[idx],get_image_cfa_pattern(list_name_img[idx])])
+    #print(get_image_cfa_pattern(list_name_img[idx]))
+    #print(pattern_decision(img))
+  print(info)
+  with open('outfile', 'wb') as fp:
+      pickle.dump(info, fp)
 
 
