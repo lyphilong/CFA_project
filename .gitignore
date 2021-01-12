@@ -4,3 +4,4 @@ __pycache__/
 ValueCounting/dataset/
 *.pth
 Shin/dataset/
+images/

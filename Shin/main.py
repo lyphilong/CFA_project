@@ -17,6 +17,7 @@ from math import floor
 #output: np.ndarray (N,W,H,3)
 def read_images(PATH):
   list_img = [img for img in glob.glob(PATH)]
+  list_img = list_img[:100]
   images = []
   for idx in range(len(list_img)):
     img_name = list_img[idx]
@@ -51,6 +52,8 @@ def image_to_patch(img, patch_num):
   M = np.sqrt(W*H/patch_num)
   M = int(M)
   #assert floor(M)==M  
+
+  
   img = np.asarray([img[:, :, 0:W//2, 0:H//2],
                     img[:, :, W//2:W, 0:H//2], 
                     img[:, :, 0:W//2, H//2:H], 
@@ -85,7 +88,7 @@ class SelfLoss(nn.Module):
         return loss
 
 
-def train_net(images, net, lr=1e-3, n_epochs_auxiliary=1000, n_epochs_blockwise=500, batch_size=20, block_size=32, save_path='trained_model.pt'):
+def train_net(images, net, lr=1e-4, n_epochs_auxiliary=1000, n_epochs_blockwise=500, batch_size=20, block_size=32, save_path='trained_model.pt'):
   criterion = SelfLoss()
   optim = torch.optim.Adam(net.parameters(), lr=lr)
   optim.zero_grad()
@@ -105,12 +108,14 @@ def train_net(images, net, lr=1e-3, n_epochs_auxiliary=1000, n_epochs_blockwise=
 
 
 if __name__=='__main__':
-  PATCH_NUM = 4
-  PATH = './dataset/*.tiff'
+  PATCH_NUM = 40
+  PATH = '../images/*.png'
   images = read_images(PATH)
   images = image_to_block(images)
   images = image_to_patch(images, PATCH_NUM)
   net = Net()
-  train_net(torch.Tensor(images), net)
+  images = torch.Tensor(images)
+  train_net(images, net)
+  print(np.argmax(net(images[0]).detach().numpy()))
 
 
